@@ -1,0 +1,7 @@
+POST http://localhost:7071/api/RewritePirate
+Content-Type: application/json
+
+{
+    "task": "Take out the trash",
+    "model": "gpt-5-nano"
+}
