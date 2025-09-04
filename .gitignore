@@ -39,3 +39,5 @@ Thumbs.db
 
 # Vite config
 vite.config.js
+
+.venv

@@ -2,8 +2,11 @@ import logging
 import azure.functions as func
 import os
 import requests
+from dotenv import load_dotenv
 
 # This function rewrites a task as a pirate using Azure Foundry
+
+load_dotenv()
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
