@@ -11,6 +11,12 @@
       </select>
       <input type="date" v-model="newTodo.dueDate" required />
       <textarea v-model="newTodo.description" placeholder="Description" required></textarea>
+      <div style="margin: 0.5rem 0;">
+        <label for="model-select">AI Model:</label>
+        <select id="model-select" v-model="selectedModel">
+          <option v-for="model in models" :key="model" :value="model">{{ model }}</option>
+        </select>
+      </div>
       <button type="submit">Add Todo</button>
     </form>
     <ul class="todo-list">
@@ -20,6 +26,7 @@
           <span class="priority">[{{ todo.priority }}]</span>
           <span class="due-date">Due: {{ todo.dueDate }}</span>
           <button @click="removeTodo(idx)">Delete</button>
+          <button @click="rewriteAsPirate(idx)" :disabled="loadingIdx === idx">{{ loadingIdx === idx ? 'Rewriting...' : 'Rewrite as Pirate' }}</button>
         </div>
         <div class="description">{{ todo.description }}</div>
       </li>
@@ -37,10 +44,14 @@ const newTodo = ref({
   dueDate: '',
   description: ''
 })
+const models = ref(["gpt-35-turbo", "gpt-4", "gpt-4o"])
+const selectedModel = ref(models.value[0])
+const loadingIdx = ref(null)
 
 onMounted(() => {
   const saved = localStorage.getItem('todos')
   if (saved) todos.value = JSON.parse(saved)
+  // Optionally, fetch models from backend
 })
 
 watch(todos, (val) => {
@@ -58,6 +69,25 @@ function addTodo() {
 
 function removeTodo(idx) {
   todos.value.splice(idx, 1)
+}
+
+async function rewriteAsPirate(idx) {
+  loadingIdx.value = idx
+  const todo = todos.value[idx]
+  try {
+    const response = await fetch('YOUR_AZURE_FUNCTION_URL', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task: todo.description, model: selectedModel.value })
+    })
+    if (!response.ok) throw new Error('AI error')
+    const pirateText = await response.text()
+    todos.value[idx].description = pirateText
+  } catch (e) {
+    alert('Failed to rewrite as pirate!')
+  } finally {
+    loadingIdx.value = null
+  }
 }
 </script>
 
@@ -131,3 +161,9 @@ button:hover {
   color: #333;
 }
 </style>
+
+<!-- vite.config.js -->
+export default {
+  base: '/AIToDOApp/', // Use your repo name here, with leading/trailing slashes
+  // ...existing config...
+}
