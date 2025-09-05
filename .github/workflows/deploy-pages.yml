@@ -1,5 +1,9 @@
 name: Build and deploy GitHub Pages
 
+# Request explicit write permission for the GITHUB_TOKEN so the action can push to gh-pages
+permissions:
+  contents: write
+
 on:
   push:
     branches: [ main ]
@@ -10,6 +14,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Persist credentials so the job can push using the automatically provided GITHUB_TOKEN
+          persist-credentials: true
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
