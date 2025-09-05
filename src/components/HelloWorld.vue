@@ -11,12 +11,6 @@
       </select>
       <input type="date" v-model="newTodo.dueDate" required />
       <textarea v-model="newTodo.description" placeholder="Description" required></textarea>
-      <div style="margin: 0.5rem 0;">
-        <label for="model-select">AI Model:</label>
-        <select id="model-select" v-model="selectedModel">
-          <option v-for="model in models" :key="model" :value="model">{{ model }}</option>
-        </select>
-      </div>
       <button type="submit">Add Todo</button>
     </form>
     <ul class="todo-list">
@@ -44,8 +38,8 @@ const newTodo = ref({
   dueDate: '',
   description: ''
 })
-const models = ref(["gpt-35-turbo", "gpt-4", "gpt-4o"])
-const selectedModel = ref(models.value[0])
+// Always use gpt-5-nano
+const fixedModel = "gpt-5-nano"
 const loadingIdx = ref(null)
 
 onMounted(() => {
@@ -75,16 +69,23 @@ async function rewriteAsPirate(idx) {
   loadingIdx.value = idx
   const todo = todos.value[idx]
   try {
-    const response = await fetch('YOUR_AZURE_FUNCTION_URL', {
+    // Use the environment variable for the Azure Function URL
+    const functionUrl = import.meta.env.VITE_AZURE_FUNCTION_URL || 'http://localhost:7071/api/RewritePirate'
+    const response = await fetch(functionUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task: todo.description, model: selectedModel.value })
+      body: JSON.stringify({ task: todo.description, model: fixedModel })
     })
-    if (!response.ok) throw new Error('AI error')
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('API Error:', response.status, errorText);
+      throw new Error(`API error: ${response.status} ${errorText.slice(0, 100)}`);
+    }
     const pirateText = await response.text()
     todos.value[idx].description = pirateText
   } catch (e) {
-    alert('Failed to rewrite as pirate!')
+    console.error('Error rewriting as pirate:', e);
+    alert(`Failed to rewrite as pirate: ${e.message || 'Unknown error'}`);
   } finally {
     loadingIdx.value = null
   }
