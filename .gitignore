@@ -41,3 +41,5 @@ Thumbs.db
 vite.config.js
 
 .venv
+
+.ps1
