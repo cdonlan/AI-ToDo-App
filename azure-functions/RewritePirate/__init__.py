@@ -42,6 +42,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         
     task = req_body.get('task')
     model = req_body.get('model')
+    # Allow overriding the default deployment via environment variable, fallback to 'o4-mini'
+    default_deployment = os.environ.get('AZURE_FOUNDRY_DEFAULT_DEPLOYMENT', 'o4-mini')
+    if not model:
+        model = default_deployment
     if not task or not model:
         return func.HttpResponse('Missing task or model', status_code=400, headers=cors_headers)
 
@@ -59,21 +63,34 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # Log the raw endpoint for debugging
     logging.info("Raw endpoint: %s", endpoint)
     
-    # If it's a raw Azure OpenAI URL, construct it properly
+    # If it's an Azure OpenAI/Cognitive Services endpoint, there are two supported forms:
+    # 1) Full deployment URL (includes '/openai/deployments/{deployment}/...') -> use as-is
+    # 2) Base resource URL (e.g. https://<resource>.cognitiveservices.azure.com) -> construct using the provided model as the deployment name
     if '.openai.azure.com' in endpoint or '.cognitiveservices.azure.com' in endpoint:
-        # Extract base URL part
-        base_url = endpoint.split('/openai/deployments/')[0].rstrip('/')
-        
-        # Use the model name as the deployment name (typical pattern)
-        # Try a newer API version (2024-02-15-preview supports newer models)
-        endpoint = f"{base_url}/openai/deployments/{model}/chat/completions?api-version=2024-02-15-preview"
-        logging.info("Constructed Azure OpenAI URL: %s", endpoint)
+        if '/openai/deployments/' in endpoint:
+            # User provided a full deployment endpoint (may already include api-version)
+            endpoint = endpoint.rstrip()
+            logging.info("Using provided full deployment endpoint: %s", endpoint)
+        else:
+            # Build the deployment URL using the model as the deployment name and a sensible default api-version
+            base_url = endpoint.rstrip('/')
+            api_version = '2025-01-01-preview'
+            endpoint = f"{base_url}/openai/deployments/{model}/chat/completions?api-version={api_version}"
+            logging.info("Constructed Azure OpenAI URL: %s", endpoint)
 
     # Headers used for the outbound API request to Azure Foundry / OpenAI
-    api_headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {api_key}'
-    }
+    # Use 'api-key' header for Azure OpenAI / Cognitive Services endpoints (the common approach for key auth)
+    if '.openai.azure.com' in endpoint or '.cognitiveservices.azure.com' in endpoint:
+        api_headers = {
+            'Content-Type': 'application/json',
+            'api-key': api_key
+        }
+    else:
+        # Fallback to Authorization Bearer for other providers that may expect OAuth tokens
+        api_headers = {
+            'Content-Type': 'application/json',
+            'Authorization': f'Bearer {api_key}'
+        }
     
     payload = {
         'model': model,

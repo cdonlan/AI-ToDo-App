@@ -1,0 +1,82 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.38.33.27573",
+      "templateHash": "6933766883612318910"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for resources"
+      }
+    },
+    "openAIName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Cognitive Services / Azure OpenAI resource (must be globally unique within Azure)"
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "S0",
+      "metadata": {
+        "description": "SKU to use for the Cognitive Services account (default: S0)"
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Whether public network access is Enabled or Disabled"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional tags"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2025-06-01",
+      "name": "[parameters('openAIName')]",
+      "location": "[parameters('location')]",
+      "kind": "OpenAI",
+      "sku": {
+        "name": "[parameters('skuName')]"
+      },
+      "properties": {
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "disableLocalAuth": true
+      },
+      "tags": "[parameters('tags')]"
+    }
+  ],
+  "outputs": {
+    "cognitiveServiceResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('openAIName'))]"
+    },
+    "cognitiveServiceName": {
+      "type": "string",
+      "value": "[parameters('openAIName')]"
+    },
+    "cognitiveServiceLocation": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', parameters('openAIName')), '2025-06-01', 'full').location]"
+    }
+  }
+}
