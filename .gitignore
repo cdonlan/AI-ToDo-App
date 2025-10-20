@@ -30,6 +30,7 @@ Thumbs.db
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea
 *.suo
 *.ntvs*
@@ -43,3 +44,7 @@ vite.config.js
 .venv
 
 .ps1
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
