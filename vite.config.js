@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/AIToDOApp/', // Use your repo name
+  base: 'AI-ToDo-App/', // Use your repo name
   server: {
     // Configure CORS for development
     proxy: {
