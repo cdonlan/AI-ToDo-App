@@ -3,7 +3,7 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
-  base: 'AI-ToDo-App/', // Use your repo name
+  base: '/AI-ToDo-App/', // Use your repo name (leading slash required for GitHub Pages)
   server: {
     // Configure CORS for development
     proxy: {
