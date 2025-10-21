@@ -1,7 +1,27 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* Font Family */
+  --font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Typographic Scale */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+  
+  font-family: var(--font-family);
   line-height: 1.5;
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -14,7 +34,7 @@
 }
 
 a {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: #646cff;
   text-decoration: inherit;
 }
@@ -31,7 +51,7 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: var(--font-size-5xl);
   line-height: 1.1;
 }
 
@@ -39,8 +59,8 @@ button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
