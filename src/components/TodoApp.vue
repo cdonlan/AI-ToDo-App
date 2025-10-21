@@ -126,7 +126,8 @@ async function rewriteAsPirate(idx) {
   max-width: 1000px;
   margin: 2rem auto;
   padding: 2rem;
-  background: #fff;
+  background: var(--surface);
+  color: var(--text);
   border-radius: 10px;
   box-shadow: 0 6px 24px rgba(0,0,0,0.08);
 }
@@ -138,7 +139,7 @@ async function rewriteAsPirate(idx) {
 }
 
 .panel {
-  background: #fbfbfb;
+  background: var(--bg);
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 1px 6px rgba(0,0,0,0.03);
@@ -167,14 +168,16 @@ form {
 
 .field-label {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-secondary);
   margin-bottom: 0.25rem;
 }
 
 input, select, textarea {
   padding: 0.6rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .actions {
@@ -183,7 +186,7 @@ input, select, textarea {
 
 button {
   padding: 0.6rem 1rem;
-  background: #42b983;
+  background: var(--success);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -191,7 +194,7 @@ button {
 }
 
 button:hover {
-  background: #369870;
+  background: var(--success-hover);
 }
 
 .todo-list {
@@ -206,7 +209,8 @@ button:hover {
 .todo-list li {
   padding: 1rem;
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--surface);
+  color: var(--text);
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
   display: flex;
   flex-direction: column;
@@ -234,15 +238,15 @@ button:hover {
   align-items: center;
 }
 
-.priority { font-weight: 700; color: #2d6a4f }
+.priority { font-weight: 700; color: var(--success) }
 
-.priority-low { border-left: 6px solid #42b983; padding-left: 0.75rem }
-.priority-medium { border-left: 6px solid #f7b731; padding-left: 0.75rem }
-.priority-high { border-left: 6px solid #eb2f06; padding-left: 0.75rem }
+.priority-low { border-left: 6px solid var(--success); padding-left: 0.75rem }
+.priority-medium { border-left: 6px solid var(--warning); padding-left: 0.75rem }
+.priority-high { border-left: 6px solid var(--danger); padding-left: 0.75rem }
 
-.due-date { font-size: 0.9em; color: #666 }
+.due-date { font-size: 0.9em; color: var(--text-secondary) }
 
-.description { color: #333; margin-top: 0.25rem }
+.description { color: var(--text); margin-top: 0.25rem }
 
 /* Responsive: stack panels on small screens */
 @media (max-width: 800px) {
